@@ -30,9 +30,9 @@ function install () {
 	mas list | grep -i "$1" > /dev/null
 
 	if [ "$?" == 0 ]; then
-		echo "==> $1 est déjà installée"
+		echo "==> $1 Already installed"
 	else
-		echo "==> Installation de $1..."
+		echo "==> Installing $1..."
 		mas search "$1" | { read app_ident app_name ; mas install $app_ident ; }
 	fi
 }
