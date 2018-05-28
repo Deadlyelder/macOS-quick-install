@@ -77,6 +77,12 @@ echo '>> Installing managers'
 install "1Password"
 install "Dashlane"
 
+echo '>> Installing Docker'
+brew install docker
+
+echo '>> Installing GNUPG'
+brew install gnupg
+
 ## System configurations
 
 echo "Changing the default settings..."
@@ -164,6 +170,4 @@ defaults write com.apple.ActivityMonitor SortDirection -int 0;ok
 
 echo 'This script misses:'
 echo '\t * cozy-cloud'
-echo '\t * docker'
-echo '\t * gpg'
 echo '\t * parcel'
