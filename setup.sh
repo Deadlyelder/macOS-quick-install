@@ -1,27 +1,34 @@
 #!/bin/sh
 
-## Homebrew
+## This script is an update to the scripts by Deadlyelder here:
+## https://github.com/Deadlyelder/macOS-quick-install
+
+# Homebrew install/update
 
 if test ! $(which brew)
 then
-	echo 'Installing Homebrew'
+	echo '> Installing Homebrew'
 	/usr/bin/ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"
 fi
 
-# Verify that installed version is up-to-date
-brew update
+echo '> Updating Homebrew'
+
+# TODO: Redirect to null
+brew update > /dev/null 2>&1
+
+brew doctor
 
 ## Cask and MAS
 
-echo 'Installing mas-cli'
+echo '> Installing mas-cli'
 brew install mas
-echo "Enter your apple store email :"
+echo "\t< Enter your apple store email :"
 read EMAIL
-echo "Enter password for the $EMAIL : "
+echo "\t< Enter password for the $EMAIL : "
 read -s PASSWORD
 mas signin $EMAIL "$PASSWORD"
 
-echo 'Installing Cask'
+echo '> Installing Cask'
 brew tap caskroom/cask
 
 # Installing apps from mas
@@ -38,34 +45,37 @@ function install () {
 }
 
 ## Softwares
-echo 'Installing the softwares'
-brew install wget cmake coreutils psutils git node libssh
+echo '> Installing the softwares'
 
-echo 'Installing utilities'
-brew cask install alfred sizeup typinator istat-menus flux appcleaner hosts carbon-copy-cloner
-install "FastScripts"
-install "PopClip"
-install "MacTracker"
+echo '>> Installing dev related stuff'
+brew install git
 
-echo 'Installing office applications'
-install "iA Writer"
-install "Ulysses"
+echo '>> Installing utilities'
+brew cask install bartender calibre istat-menus flux radio-silence
+install "Pocket"
+install "Coffitivity"
+install "Amphetamine"
+install "Magnet"
+install "Silenz"
+
+echo '>> Installing office applications'
 install "Pages"
 install "Keynote"
-brew cask install evernote
 
-echo 'Installing dev applications'
-brew cask install iterm2 transmit
+echo '>> Installing music/video apps'
+brew cask install vlc spotify
+
+echo '>> Installing dev applications'
+brew cask install iterm2 transmit visual-studio-code python
 install "Xcode"
-install "JSON Helper for AppleScript"
-install "Twitter Scripter"
 
-echo 'Installing communication applications'
-install "Reeder"
-install "Tweetbot"
+echo '>> Installing communication applications'
 install "Slack"
+brew cask install discord firefox transmission tunnelblick
+
+echo '>> Installing managers'
 install "1Password"
-brew cask install google-chrome firefox mattermost transmission
+install "Dashlane"
 
 ## System configurations
 
@@ -97,7 +107,7 @@ defaults write com.apple.desktopservices DSDontWriteNetworkStores -bool true
 defaults write com.apple.desktopservices DSDontWriteUSBStores -bool true
 
 # Dock settings
-# Minimum text size 
+# Minimum text size
 defaults write com.apple.dock tilesize -int 15
 # Activate magnification and set the size to max of the magnification
 defaults write com.apple.dock magnification -bool true
@@ -116,36 +126,6 @@ sudo defaults write NSGlobalDomain com.apple.mouse.tapBehavior -int 1
 
 ## Application setups
 
-## Safari
-# Set Safari’s home page to ‘about:blank’
-defaults write com.apple.Safari HomePage -string "about:blank";ok
-
-# Prevent Safari from opening ‘safe’ files automatically after downloading
-defaults write com.apple.Safari AutoOpenSafeDownloads -bool false;ok
-
-# Hitting the Backspace key to go to the previous page in history
-defaults write com.apple.Safari com.apple.Safari.ContentPageGroupIdentifier.WebKit2BackspaceKeyNavigationEnabled -bool true;ok
-
-# Hide Safari’s bookmarks bar by default
-defaults write com.apple.Safari ShowFavoritesBar -bool false;ok
-
-# Hide annyoing Safari’s sidebar in Top Sites
-defaults write com.apple.Safari ShowSidebarInTopSites -bool false;ok
-
-# Disable Safari’s thumbnail cache for History and Top Sites
-defaults write com.apple.Safari DebugSnapshotsUpdatePolicy -int 2;ok
-
-# Enable Safari’s debug menu
-defaults write com.apple.Safari IncludeInternalDebugMenu -bool true;ok
-
-# Enable the Develop menu and the Web Inspector in Safari
-defaults write com.apple.Safari IncludeDevelopMenu -bool true
-defaults write com.apple.Safari WebKitDeveloperExtrasEnabledPreferenceKey -bool true
-defaults write com.apple.Safari com.apple.Safari.ContentPageGroupIdentifier.WebKit2DeveloperExtrasEnabled -bool true;ok
-
-# Add a context menu item for showing the Web Inspector in web views
-defaults write NSGlobalDomain WebKitDeveloperExtras -bool true;ok
-
 ## Disable Photos app when iPhone is plugged
 defaults -currentHost write com.apple.ImageCapture disableHotPlug -bool YES
 
@@ -161,20 +141,6 @@ defaults write NSGlobalDomain NSAutomaticDashSubstitutionEnabled -bool false;ok
 
 # Disable continuous spell check
 defaults write com.apple.messageshelper.MessageController SOInputLineSettings -dict-add "continuousSpellCheckingEnabled" -bool false;ok
-
-## Apple App Store
-#Enable the WebKit Developer Tools in the Mac App Store
-defaults write com.apple.appstore WebKitDeveloperExtras -bool true;ok
-
-# Enable Debug Menu in App store
-defaults write com.apple.appstore ShowDebugMenu -bool true;ok
-
-## Address Book, Dashboard, iCal, Texedit.
-# Enable the debug menu in Address Book
-defaults write com.apple.addressbook ABShowDebugMenu -bool true;ok
-
-# Dev mode in the dashboard
-defaults write com.apple.dashboard devmode -bool true;ok
 
 # Plain text mode for new TextEdit doc
 defaults write com.apple.TextEdit RichText -int 0;ok
@@ -196,17 +162,8 @@ defaults write com.apple.ActivityMonitor ShowCategory -int 0;ok
 defaults write com.apple.ActivityMonitor SortColumn -string "CPUUsage"
 defaults write com.apple.ActivityMonitor SortDirection -int 0;ok
 
-## Mail App
-# Disable send and reply animations in Mail.app
-defaults write com.apple.mail DisableReplyAnimations -bool true
-defaults write com.apple.mail DisableSendAnimations -bool true;ok
-
-# Copy email addresses as 'alice@example.com' instead of 'Alice Bob <alice@example.com>' in Mail.app"
-defaults write com.apple.mail AddressesIncludeNameOnPasteboard -bool false;ok
-
-# Disable inline attachments (just show the icons)
-defaults write com.apple.mail DisableInlineAttachmentViewing -bool true;ok
-
-# Disable automatic spell checking
-defaults write com.apple.mail SpellCheckingBehavior -string "NoSpellCheckingEnabled";ok
-
+echo 'This script misses:'
+echo '\t * cozy-cloud'
+echo '\t * docker'
+echo '\t * gpg'
+echo '\t * parcel'
